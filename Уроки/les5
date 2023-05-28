@@ -1,0 +1,62 @@
+a = int(input())
+m = input()
+s = m
+for i in range(a - 1):
+    rrrrrrr = input()
+    if len(rrrrrrr) > len(m):
+        m = rrrrrrr
+    if len(rrrrrrr) < len(s):
+        s = rrrrrrr
+print(f'Shortest: {len(s)}-length word "{s}"')
+print(f'Longest: {len(m)}-length word "{m}"')
+
+
+tuples = [(80, 78, 90, 65), (58, 39, 67, 84), (78, 88, 91, 90), (77, 86, 96, 49)]
+print('[', end='')
+print((*tuples[0][:len(tuples) -1 ], 20), end='')
+print(', ', end='')
+print((*tuples[1][:len(tuples) -1 ], 20), end='')
+print(', ', end='')
+print((*tuples[2][:len(tuples) -1 ], 20), end='')
+print(', ', end='')
+print((*tuples[3][:len(tuples) -1 ], 20), end='')
+print(']')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+№№№№№№№№№№№№№№№№№№№№№№№№№№№№№№№№№№№№№№№№№№№№№№№№№№3
+import easygui
+
+
+class human:
+    def __init__(self, a, b, c, d, e, f):
+        self.name = a
+        self.surname = b
+        self.age = c
+        self.height = d
+        self.colorhair = e
+        self.coloreye = f
+    def getinfo(self):
+        easygui.msgbox(f'Имя: {self.name}\n'
+                       f'Фамилия: {self.surname}')
+
+un = easygui.enterbox("Имя:")
+user = human(un, 1, 1, 1, 1, 1)
+user.getinfo()

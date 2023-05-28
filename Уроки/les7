@@ -1,0 +1,22 @@
+a = int(input())
+b = 2
+o = 0
+t = 1
+if a > 0:
+    print(o, end=' ')
+
+
+def another_way(a, b, o, t):
+    b += 1
+    if a > 1:
+        if b % 2 == 0:
+            o += t
+            print(o, end=' ')
+        if b % 2 != 0:
+            t += o
+            print(t, end=' ')
+
+    if b < a + 1:
+        another_way(a, b, o, t)
+
+another_way(a, b, o, t)

@@ -1,0 +1,52 @@
+# Составные
+# name = "you"             # string
+# my_list = [1, 2, 3]      # списки
+# my_set = {1, 2, 3}       # множества
+# dictionary = {2: 'two'}  # словари
+
+# действия
+# + Сложение
+# - Вычитание
+# * Умножение
+# / Деление
+# // Целочисленное деление
+# % Остаток от деления на
+# ** Возведение в степень
+
+# ord()
+# chr()
+
+
+
+
+
+
+
+
+
+
+
+
+
+²import random
+
+
+
+def print_hello(*a):
+    b = a
+    print('Привет', *b, sep=', ', end='')
+    print("!!!")
+    #print(f'Вы должны нам {random.randrange(100, 1000000, 50)} рублей!!!')
+    print(f'Желаете узнать скины из игры "КУБЫК++" ?')
+    aa = input()
+    if aa == 'Да' or aa == 'да':
+        print(f'original,', 'new,', 'bomber,', 'station.')
+    else:
+        print('Вы точно не кибергеймер!!!')
+
+
+
+while True:
+    s = input().split()
+
+    print_hello(*s)

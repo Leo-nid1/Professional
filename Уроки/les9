@@ -1,0 +1,70 @@
+# В кубе:
+
+def cubik(n):
+    return n ** 3
+
+nums = [1, 2, 3,4, 4.5 ,5,6,7,8,9,0]
+a = []
+for i in range(len(nums)):
+    a.append(cubik(nums[i]))
+print(*a, sep=' < ', end='?\n')
+
+
+# sposob 2:
+nums3 = [cubik(i) for i in nums]
+print(*nums3, sep=' < ', end='?\n')
+
+# sposob 3:
+
+nums4 = map(cubik, nums)
+print(*nums4, sep=' < ', end='?\n')
+
+# sposob 4:
+
+nums5 = map(lambda x: x ** 3, nums)
+print(*nums5, sep=' < ', end='?\n')
+
+
+
+nums8 = input().split()
+nim = []
+for i in range(len(nums8)):
+    nim.append(int(nums8[i]))
+nums5 = map(lambda x: x ** 3, nim)
+print(*nums5)
+
+
+
+
+nums8 = input().split()
+a, b = nums8[1].split('-')
+willbetuple = []
+
+for i in range(len(nums8)):
+    a, b = nums8[i].split('-')
+
+    c = (a, b)
+    willbetuple.append(c)
+
+d = tuple(willbetuple)
+print(d)
+
+
+
+a = input().split()
+nums = {'0': 'zero', '1': 'one', '2': 'two', '3': 'three', '4': 'four', '5': 'five', '6': 'six', '7': 'seven',
+        '8': 'eight', '9': 'nine'}
+for i in range(len(a)):
+
+
+    b = map(lambda x: nums[a[i]], '1')
+
+    print(*b, end=' ')
+
+
+
+
+
+
+
+
