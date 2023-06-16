@@ -1,246 +1,7 @@
-import datetime
 import sqlite3
 import json
-import time
-
-
-
-class User:
-    def __init__(self, userid: str, name: str, surname:str, login:str, password:str, email:str, status:int, birthdate:str):
-        self.id = userid
-        self.name = name
-        self.surname = surname
-        self.login = login
-        self.password = password
-        self.email = email
-        self.status = status
-        self.birthdate = birthdate
-
-    @property
-    def id(self):
-        return self.id
-    @id.setter
-    def id(self, intervalue):
-        if type(intervalue) != int:
-            raise TypeError()
-        if intervalue < 1:
-            raise ValueError()
-        self.id = intervalue
-
-    @property
-    def login(self):
-        return self._login
-    @login.setter
-    def login(self, value):
-        ok = True
-        if type(value) != str:
-            raise TypeError()
-        symbols = 'абвгдежзийклмнопрстуфхцчшщьыъэюя_ЙЦУКЕНГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТЬБЮ1234567890'
-        for i in value:
-            if not i in symbols:
-                ok = False
-        if len(value) < 8:
-            raise NotImplementedError()
-        if ok:
-            self._login = value
-            return
-        raise TypeError()
-
-    @property
-    def password(self):
-        return self._password
-    @password.setter
-    def password(self, value):
-        ok = True
-        if type(value) != str:
-            raise TypeError()
-        SYMBOLS = 'абвгдежзийклмнопрстуфхцчшщьыъэюя_ЙЦУКЕНГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТЬБЮ1234567890'
-        for i in value:
-            if not i in SYMBOLS:
-                ok = False
-        if len(value) < 8:
-            raise NotImplementedError()
-        if ok:
-            self._password = value
-            return
-        raise TypeError()
-
-    @property
-    def name(self):
-        return self._name
-    @name.setter
-    def name(self, value):
-        if type(value) != str:
-            raise TypeError('*_*')
-        FORBIDDEN_SYMBOLS = ' !@#$%^&*()"№;:?<>,./|{}[]'
-        for i in value:
-            if i in FORBIDDEN_SYMBOLS:
-                raise TypeError(f'Что это такое? -- {i}')
-        if value[0].islower():
-            raise TypeError('2 в журнал!')
-        self._name = value
-
-    @property
-    def surname(self):
-        return self._surname
-    @surname.setter
-    def surname(self, value):
-        if type(value) != str:
-            raise TypeError('*_*')
-        FORBIDDEN_SYMBOLS = ' !@#$%^&*()"№;:?<>,./|{}[]'
-        for i in value:
-            if i in FORBIDDEN_SYMBOLS:
-                raise TypeError(f'Что это такое? -- {i}')
-        if value[0].islower():
-            raise TypeError('2 в журнал!')
-        self._surname = value
-
-    @property
-    def email(self):
-        return self._email
-    @email.setter
-    def email(self, value):
-        if value is None:
-            self._birthdate = None
-            return
-        amount_of_dots = 0
-        FORBIDDEN_SYMBOLS = ' !#$%^&*()"№;:?<>,/|{}[]'
-        if len(value) < 9:
-            raise ValueError()
-        if type(value) != str:
-            raise ValueError('o_o')
-        if '@' not in value:
-            raise ValueError("Это не почта!")
-        for i in value:
-            if '.' in value:
-                amount_of_dots += 1
-            if i in FORBIDDEN_SYMBOLS:
-                raise ValueError('Точка, точка, запятая -- вышла рожица смешная')
-        if amount_of_dots > 1:
-            raise ValueError('Точка, точка, запятая -- вышла рожица смешная')
-        if 3 <= len(value) - value.find('.') <= 4:
-            self._email = value
-        raise ValueError()
-
-    @property
-    def birthdate(self):
-        return self._birthdate
-    @birthdate.setter
-    def birthdate(self, value):
-        if value is None:
-            self._birthdate = None
-            return
-        if type(value) != str:
-            raise TypeError()
-        nums = list(map(int, value.split('-')))
-        if len(nums) < 3:
-            raise ValueError()
-        date = datetime.datetime.date(nums[0], nums[1], nums[2])
-        if date < datetime.datetime.now():
-            raise ValueError()
-        self._birthdate = value
-
-    @property
-    def status(self):
-        return self._status
-    @status.setter
-    def status(self, value):
-        if type(value) != int:
-            raise TypeError()
-        if value < 1:
-            raise ValueError()
-        self._status = value
-
-
-    def __str__(self):
-        return f'Пользователь {self._surname} {self._name}'
-    def __repr__(self):
-        return f'Пользователь {self._surname} {self._name}'
-
-
-
-
-
-
-
-
-
-
-
-class Database():
-    def __new__(cls):
-        if not hasattr(Database, '_instance'):
-            Database._instance = super().__new__(cls)
-        return Database._instance
-
-    def __init__(self):
-        db_filename = 'wait_a_year.db'
-        self.connection = sqlite3.connect(db_filename)
-        self.cursor = self.connection.cursor()
-        self.cursor.execute("""CREATE TABLE IF NOT EXISTS users(
-                  id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-                  name TEXT NOT NULL,
-                  surname TEXT NOT NULL,
-                  login TEXT UNIQUE NOT NULL,
-                  password TEXT NOT NULL,
-                  email TEXT);
-              """)
-        self.cursor.execute("""CREATE TABLE IF NOT EXISTS adresses(
-                          id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-                          country TEXT NOT NULL,
-                          city TEXT NOT NULL,
-                          neighbourhood TEXT NOT NULL,
-                          house TEXT NOT NULL,
-                          flat int NOT NULL);
-                      """)
-        self.cursor.execute("""CREATE TABLE IF NOT EXISTS orders(
-                          id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-                          sender_id TEXT NOT NULL,
-                          adress TEXT NOT NULL,
-                          info TEXT NOT NULL);
-                      """)
-        # self.cursor.execute("""ALTER TABLE users ADD COLUMN status INTEGER""")
-        # self.cursor.execute("""ALTER TABLE orders ADD COLUMN status INTEGER""")
-
-        self.cursor.execute("""CREATE TABLE IF NOT EXISTS orderstatuses(
-                          id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-                          status TEXT NOT NULL UNIQUE);
-                      """)
-
-        self.cursor.execute("""CREATE TABLE IF NOT EXISTS userstatuses(
-                          id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-                          status TEXT NOT NULL UNIQUE);
-                      """)
-  #       self.cursor.execute(f"""INSERT INTO users (name, surname, login, password, email, status)
-  # VALUES ( 'Семен', 'Дежнев', 'Путешественник', '123454679', 'netpochty@mail.ru', {2});""")
-
-        #self.cursor.execute("""ALTER TABLE users ADD COLUMN birthdate text""")
-        self.connection.commit()
-
-    def get_all_users(self):
-        self.cursor.execute('SELECT * FROM users')
-        rows = self.cursor.fetchall()
-        users = []
-        for row in rows:
-            user = User(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7])
-            users.append(user)
-        return users
-
-
-
-
-class Adress:
-    def __init__(self, info:tuple):
-        self.id = info[0]
-        self.country = info[1]
-        self.city =info[2]
-        self.neighbourhood = info[3]
-        self.house = info[4]
-        self.flat = info[5]
-class Order:
-    def __init__(self):
-        pass
-
+import interface
+from interface import *
 class Properties:
     database_filename = ''
 
@@ -252,15 +13,206 @@ with open('properties.json', 'r') as opened:
 json_object = json.dumps(properties.__dict__)
 with open('properties.json', 'w') as to_write:
     to_write.write(json_object)
+class Database:
+    def __new__(cls):
+        if not hasattr(Database, '_instance'):
+            Database._instance = super().__new__(cls)
+        return Database._instance
+    def __init__(self):
+        with open('properties.json', 'r') as openfile:
+            self.properties = json.load(openfile, object_hook=Properties)
 
-# class Cat:
-#     def __init__(self):
-#         self.name = 'cat'
-#         self.sound = 'Miaw'
-#         self.legs_amount = 4
-# with open('cat.json', 'w') as writttte:
-#     writttte.write(json.dumps(Cat().__dict__))
+        db_filename = self.properties.database_filename
+        self.connection = sqlite3.connect(db_filename)
+        self.cursor = self.connection.cursor()
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS users(
+                          id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                          name TEXT NOT NULL,
+                          surname TEXT NOT NULL,
+                          login TEXT UNIQUE NOT NULL,
+                          password TEXT NOT NULL,
+                          email TEXT,
+                          status INTEGER,
+                          birthdate TEXT,
+                          orders TEXT,
+                          adress_id INTEGER,
+                          bill INTEGER);
+                      """)
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS adresses(
+                                  id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                                  country TEXT NOT NULL,
+                                  city TEXT NOT NULL,
+                                  neighbourhood TEXT NOT NULL,
+                                  house INTEGER NOT NULL,
+                                  flat INTEGER NOT NULL);
+                              """)
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS orders(
+                                  id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                                  sender_id INTEGER NOT NULL,
+                                  adress_id INTEGER NOT NULL,
+                                  status_id INTEGER);
+                              """)
+
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS orderstatuses(
+                                  id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                                  status TEXT NOT NULL UNIQUE);
+                              """)
+
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS userstatuses(
+                                  id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                                  status TEXT NOT NULL UNIQUE);
+                              """)
+        self.connection.commit()
+    # Пользователь
+    def get_all_users(self):
+        self.cursor.execute('SELECT * FROM users')
+        rows = self.cursor.fetchall()
+        users = []
+        for row in rows:
+            user = interface.User(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10])
+            users.append(user)
+        return users
+    def add_new_user(self, user: interface.User):
+        try:
+            self.cursor.execute(
+                "INSERT INTO users (name, surname, login, password, email, status, birthdate, orders, adress_id, bill) VALUES (?,?,?,?,?,?,?,?, ?, ?)",
+                (user.name, user.surname, user.login, user.password, user.email, user.status, user.birthdate, user.orders, user.adress_id ,user.bill))
+            self.connection.commit()
+        except Exception as e:
+            print(e)
+    def delete_user(self, user: interface.User):
+        try:
+            self.cursor.execute("""DELETE FROM users WHERE login = ? AND password = ?""", (user.login, user.password))
+            self.connection.commit()
+            return 'Пользователь успешно удален'
+        except Exception as s:
+            print(s)
+            return 'Возникла ошибка'
+    def get_user_by_login_and_password(self, login: str, password: str):
+        try:
+            self.cursor.execute("""SELECT * FROM users WHERE login = ? AND password = ?""", (login, password))
+            rows = self.cursor.fetchall()
+            for row in rows:
+                return interface.User(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10])
+            return interface.User(0, '-', '-', 'гость', '-', '-', 4, None, '', 0, 0)
+        except Exception:
+            print('Ошибка')
+            return interface.User(0, '-', '-', 'гость', '-', '-', 4, None, '', 0, 0)
+    def get_user_by_id(self, user_id: int):
+        try:
+            self.cursor.execute("""SELECT * FROM users WHERE id = ?""", (user_id,))
+            row = self.cursor.fetchone()
+            return interface.User(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10])
+        except Exception as e:
+            print(e)
+            return interface.User(0, '-', '-', 'гость', '-', '-', 4, None, '', 0, 0)
+
+    def get_all_statuses(self):
+        try:
+            self.cursor.execute("""SELECT * FROM userstatuses""")
+            statuses = self.cursor.fetchall()
+            return dict((id, tit) for tit, id in statuses)
+        except Exception:
+            return {}
+    def get_status_by_login(self, login: str):
+        try:
+            self.cursor.execute("""SELECT * FROM userstatuses WHERE status = ?""", (login,))
+            status = self.cursor.fetchone()
+            return status[0]
+        except Exception:
+            return ''
+    def get_status_by_id(self, id: int):
+        try:
+            self.cursor.execute("""SELECT * FROM userstatuses WHERE id = ?""", (id,))
+            status = self.cursor.fetchone()
+            return status[1]
+        except Exception:
+            return ''
+    def update_user(self, what_to_redact: str, redacted_value: str, key: int):
+        try:
+            if what_to_redact == 'имя':
+                self.cursor.execute("""UPDATE users SET name = ? WHERE id = ?""", (redacted_value, key))
+            if what_to_redact == 'фамилия':
+                self.cursor.execute("""UPDATE users SET surname = ? WHERE id = ?""", (redacted_value, key))
+            if what_to_redact == 'логин':
+                self.cursor.execute("""UPDATE users SET login = ? WHERE id = ?""", (redacted_value, key))
+            if what_to_redact == 'пароль':
+                self.cursor.execute("""UPDATE users SET password = ? WHERE id = ?""", (redacted_value, key))
+            if what_to_redact == 'почта':
+                self.cursor.execute("""UPDATE users SET email = ? WHERE id = ?""", (redacted_value, key))
+            if what_to_redact == 'дата рождения':
+                self.cursor.execute("""UPDATE users SET birthdate = ? WHERE id = ?""", (redacted_value, key))
+
+            self.connection.commit()
+        except Exception as e:
+            print(e)
+    # Адрес
+    def get_all_adresses(self):
+        try:
+            self.cursor.execute("""SELECT * FROM adresses""")
+            adresses = self.cursor.fetchall()
+            adress_list = []
+            for adress in adresses:
+                adress_list.append(interface.Adress(adress))
+            return adress_list
+        except Exception as e:
+            print(e)
+            return []
+    def get_adress_by_id(self, adress_id: int):
+        try:
+            self.cursor.execute("""SELECT * FROM adresses WHERE id = ?""", (adress_id,))
+            return interface.Adress(self.cursor.fetchone())
+        except Exception as e:
+            print(e)
+            return None
+    def add_new_adress(self, adress: interface.Adress):
+        try:
+            self.cursor.execute(
+                "INSERT INTO adresses (country, city, neighbourhood, house, flat) VALUES (?,?,?,?,?)",
+                (adress.country, adress.city, adress.neighbourhood, adress.house, adress.flat))
+            self.connection.commit()
+        except Exception as e:
+            print(e)
+    def get_adressID_by_adress(self, adress: interface.Adress):
+        try:
+            self.cursor.execute("""SELECT * FROM adresses WHERE country = ? AND city = ? AND neighbourhood = ? AND house = ? AND flat = ?""", (adress.country, adress.city, adress.neighbourhood, adress.house, adress.flat))
+            adress = interface.Adress(self.cursor.fetchone())
+            return adress.id
+        except Exception as e:
+            print(e)
+            return None
+    # Заказ
+    def get_all_user_orders(self, user: interface.User):
+        try:
+            self.cursor.execute("""SELECT * FROM orders WHERE adress_id = ?""", (user.adress_id,))
+            rows = self.cursor.fetchall()
+            orders = []
+            for row in rows:
+                orders.append(interface.Order(row))
+            return orders
+        except Exception as e:
+            print(e)
+    def get_order_by_id(self, order_id: int):
+        try:
+            self.cursor.execute("""SELECT * FROM orders WHERE id = ?""", (order_id,))
+            row = self.cursor.fetchone()
+            return interface.Order(row)
+        except Exception as e:
+            print(e)
+    def add_new_order(self, order:interface.Order):
+        try:
+            self.cursor.execute(
+                "INSERT INTO orders (sender_id, adress_id, status_id) VALUES (?,?,?)",
+                (order.sender_id, order.reciever_adress_id, order.status_id))
+            self.connection.commit()
+        except Exception as e:
+            print(e)
+
+
+    def set_interface(self):
+        window = Window(self)
+
 
 
 d = Database()
-print(d.get_all_users())
+d.set_interface()
